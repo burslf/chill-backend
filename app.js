@@ -47,7 +47,6 @@ const messages = {
 }
 
 io.on('connection', (socket) => {
-  console.log(socket.handshake.auth)
   socket.on("join server", (username, callback) => {
     console.log(username)
     if(users.find(u => u.username == username)) {
