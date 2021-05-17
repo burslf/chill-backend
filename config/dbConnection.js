@@ -4,7 +4,7 @@ let url;
 let dbName;
 
 url = process.env.DATABASE_URL;
-dbName = "chilldatabase"
+dbName = "EyeIndatabase"
 
 const client = new MongoClient(url, {useUnifiedTopology: true, useNewUrlParser: true})
 let _db;

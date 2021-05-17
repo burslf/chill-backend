@@ -47,17 +47,26 @@ const messages = {
 }
 
 io.on('connection', (socket) => {
-  socket.on("join server", (username) => {
-    socket.username = username
-    const user = {
-      username: socket.username,
-      id: socket.id
+  console.log(socket.handshake.auth)
+  socket.on("join server", (username, callback) => {
+    console.log(username)
+    if(users.find(u => u.username == username)) {
+      console.log("already exist")
+      callback(false)      
+    }else {
+      callback(true)
+      socket.username = username
+      const user = {
+        username: socket.username,
+        id: socket.id
+      }
+      console.log(`${user.username} is conected`);
+      users.push(user);
+      io.emit('new user', users)
+      console.log(users)
     }
-    console.log(`${user.username} is conected`);
-    users.push(user);
-    io.emit('new user', users)
-    console.log(users)
   })
+
   socket.on("join room", (roomName, cb) => {
     socket.join(roomName)
     cb(messages[roomName])
@@ -81,10 +90,14 @@ io.on('connection', (socket) => {
       console.log(messages[chatName])
   })
   
+  socket.on("end", () => {
+    socket.disconnect()
+  })
+
   socket.on('disconnect', () => {
     users = users.filter(u => u.id !== socket.id)
     io.emit("new user", users)
-    console.log(`${socket.username} is disconnected`);
+    console.log(`${socket.username || "User"} is disconnected`);
   });
 
 
